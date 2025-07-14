@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build RentalShop",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-o", "RentalShop.exe",
+        "main.cpp",
+        "RentalShop.cpp",
+        "-lgdi32"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
