@@ -1,0 +1,4 @@
+﻿  AEPS Residences.cpp
+C:\Users\user\OneDrive\Desktop\Programming\ImprovedProjects\AEPS Residences\AEPS Residences.cpp(128,58): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\user\OneDrive\Desktop\Programming\ImprovedProjects\AEPS Residences\AEPS Residences.cpp(139,26): warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
+  AEPS Residences.vcxproj -> C:\Users\user\OneDrive\Desktop\Programming\ImprovedProjects\AEPS Residences\x64\Debug\AEPS Residences.exe
