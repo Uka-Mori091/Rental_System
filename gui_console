@@ -47,4 +47,65 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     return 0;
 }
 
+void ReopenWindow(HINSTANCE hInst, int CmdShow){
+    const char CLASS_NAME[] = "RentalSysWindowClass";
+
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WndProc;
+    wc.hInstance = hInst;
+    wc.lpszClassName = CLASS_NAME;
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+
+    RegisterClass(&wc);
+
+    HWND hwnd = CreateWindow(CLASS_NAME, "Rental System GUI",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, 400, 300,
+        nullptr, nullptr, hInst, nullptr);
+
+    if (!hwnd) 
+    {
+        return 0;
+    }
+
+    CreateWindow("BUTTON", "Add Customer", WS_VISIBLE | WS_CHILD, 30, 30, 150, 30, 
+    hwnd, (HMENU)ID_ADD_CUSTOMER, hInst, nullptr);
+
+    CreateWindow("BUTTON", "List Customers", WS_VISIBLE | WS_CHILD, 30, 80, 150, 30, 
+    hwnd, (HMENU)ID_LIST_CUSTOMERS, hInst, nullptr);
+
+    CreateWindow("BUTTON", "Show Available", WS_VISIBLE | WS_CHILD, 30, 130, 150, 30, 
+    hwnd, (HMENU)ID_SHOW_AVAILABLE, hInst, nullptr);
+
+    CreateWindow("BUTTON", "Delete Item", WS_VISIBLE | WS_CHILD, 30, 150, 150, 30, 
+    hwnd, (HMENU)ID_DELETE_ITEM, hInst, nullptr);
+
+    CreateWindow("BUTTON", "Search Item", WS_VISIBLE | WS_CHILD, 30, 190, 150, 30, 
+    hwnd, (HMENU)ID_SEARCH_ITEM, hInst, nullptr);
+
+    CreateWindow("BUTTON", "Back to Menu", WS_VISIBLE | WS_CHILD, 30, 230, 150, 30, 
+    hwnd, (HMENU)ID_BACK_TO_MENU, hInst, nullptr);
+
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
+
+}
+
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow){
+    ReopenWindow(hInst, nCmdShow);
+
+    MSG msg = {};
+    while (GetMessage(&msg, nullptr, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+
+        if (msg.message == WM_QUIT){
+        ReopenWindow(hInst, nCmdShow);
+        
+        }
+    }
+
+    return 0;
+}
 
