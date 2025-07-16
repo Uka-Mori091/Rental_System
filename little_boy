@@ -1,0 +1,169 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <iomanip>
+#include <algorithm>
+
+using namespace std;
+
+struct Item {
+    string id;
+    string name;
+    double price;
+    int quantity;
+};
+
+class ItemManager {
+private:
+    vector<Item> itemList;
+public:
+    void loadFromFile(const string& filename) {
+        ifstream inFile(filename);
+        if (!inFile) {
+            cout << "File not found. Starting with empty list.\n";
+            return;
+        }
+
+        Item temp;
+        while (inFile >> temp.id >> ws &&
+               getline(inFile, temp.name, '|') &&
+               inFile >> temp.price >> temp.quantity) {
+            itemList.push_back(temp);
+        }
+        inFile.close();
+    }
+
+    void saveToFile(const string& filename) {
+        ofstream outFile(filename);
+        for (const auto& item : itemList) {
+            outFile << item.id << "\n"
+                    << item.name << "|"
+                    << item.price << " "
+                    << item.quantity << "\n";
+        }
+        outFile.close();
+    }
+
+    void addItem() {
+        Item* newItem = new Item;
+        char confirm;
+
+        cout << "\nEnter Item ID: ";
+        cin >> newItem->id;
+        cin.ignore();
+        cout << "Enter Item Name: ";
+        getline(cin, newItem->name);
+        cout << "Enter Item Price: ";
+        cin >> newItem->price;
+        cout << "Enter Item Quantity: ";
+        cin >> newItem->quantity;
+
+        cout << "Add this item? (Y/N): ";
+        cin >> confirm;
+
+        if (toupper(confirm) == 'Y') {
+            itemList.push_back(*newItem);
+            cout << "Item added successfully.\n";
+        } else {
+            cout << "Item addition cancelled.\n";
+        }
+        delete newItem;
+    }
+
+    void searchItem() {
+        string id;
+        cout << "\nEnter Item ID to search: ";
+        cin >> id;
+
+        for (Item* ptr = itemList.data(); ptr < itemList.data() + itemList.size(); ++ptr) {
+            if (ptr->id == id) {
+                cout << "\nItem Found:\n"
+                     << "ID: " << ptr->id << "\n"
+                     << "Name: " << ptr->name << "\n"
+                     << "Price: " << ptr->price << "\n"
+                     << "Quantity: " << ptr->quantity << "\n";
+                return;
+            }
+        }
+        cout << "Item not found.\n";
+    }
+
+    void deleteItem() {
+        string id;
+        char confirm;
+        cout << "\nEnter Item ID to delete: ";
+        cin >> id;
+
+        auto it = find_if(itemList.begin(), itemList.end(), [&](const Item& item) {
+            return item.id == id;
+        });
+
+        if (it != itemList.end()) {
+            cout << "Delete this item? (Y/N): ";
+            cin >> confirm;
+            if (toupper(confirm) == 'Y') {
+                itemList.erase(it);
+                cout << "Item deleted successfully.\n";
+            } else {
+                cout << "Item deletion cancelled.\n";
+            }
+        } else {
+            cout << "Item not found.\n";
+        }
+    }
+
+    void showItems() const {
+        cout << "\n========== ITEM LIST ==========\n";
+        cout << left << setw(10) << "ID"
+             << setw(20) << "Name"
+             << setw(10) << "Price"
+             << setw(10) << "Qty" << "\n";
+
+        for (const auto& item : itemList) {
+            cout << left << setw(10) << item.id
+                 << setw(20) << item.name
+                 << setw(10) << item.price
+                 << setw(10) << item.quantity << "\n";
+        }
+
+        if (itemList.empty()) {
+            cout << "No items found.\n";
+        }
+    }
+};
+
+void showMenu() {
+    cout << "\n=========== RENTAL SYSTEM MENU ===========\n";
+    cout << "1. Add Item\n";
+    cout << "2. Search Item\n";
+    cout << "3. Delete Item\n";
+    cout << "4. Show Item List\n";
+    cout << "5. Exit\n";
+    cout << "==========================================\n";
+    cout << "Enter your choice: ";
+}
+
+int main() {
+    ItemManager manager;
+    manager.loadFromFile("items.txt");
+
+    int choice;
+    do {
+        showMenu();
+        cin >> choice;
+
+        switch (choice) {
+            case 1: manager.addItem(); break;
+            case 2: manager.searchItem(); break;
+            case 3: manager.deleteItem(); break;
+            case 4: manager.showItems(); break;
+            case 5: cout << "Exiting Rental System.\n"; break;
+            default: cout << "Invalid choice. Try again.\n";
+        }
+
+        manager.saveToFile("items.txt");
+
+    } while (choice != 5);
+
+    return 0;
+}
