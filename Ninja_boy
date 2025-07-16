@@ -1,0 +1,143 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <algorithm>
+
+using namespace std;
+
+struct Item {
+    string id;
+    string name;
+    double price;
+    int quantity;
+};
+
+vector<Item> itemList;
+
+void showMenu() {
+    cout << "\n=========== RENTAL SYSTEM MENU ===========\n";
+    cout << "1. Add Item\n";
+    cout << "2. Search Item\n";
+    cout << "3. Delete Item\n";
+    cout << "4. Show Item List\n";
+    cout << "5. Back to Menu\n";
+    cout << "==========================================\n";
+    cout << "Enter your choice: ";
+}
+
+void addItem() {
+    Item newItem;
+    char confirm;
+
+    cout << "\nEnter Item ID: ";
+    cin >> newItem.id;
+
+    cout << "Enter Item Name: ";
+    cin.ignore();
+    getline(cin, newItem.name);
+
+    cout << "Enter Item Price: ";
+    cin >> newItem.price;
+
+    cout << "Enter Item Quantity: ";
+    cin >> newItem.quantity;
+
+    cout << "Add this item? (Y/N): ";
+    cin >> confirm;
+
+    if (toupper(confirm) == 'Y') {
+        itemList.push_back(newItem);
+        cout << "Item added successfully.\n";
+    } else {
+        cout << "Item addition cancelled.\n";
+    }
+}
+
+void searchItem() {
+    string searchID;
+    cout << "\nEnter Item ID to search: ";
+    cin >> searchID;
+
+    bool found = false;
+    for (const auto& item : itemList) {
+        if (item.id == searchID) {
+            cout << "\nItem Found:\n";
+            cout << "ID: " << item.id << "\n";
+            cout << "Name: " << item.name << "\n";
+            cout << "Price: " << item.price << "\n";
+            cout << "Quantity: " << item.quantity << "\n";
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "Item not found.\n";
+    }
+}
+
+void deleteItem() {
+    string deleteID;
+    char confirm;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> deleteID;
+
+    auto it = find_if(itemList.begin(), itemList.end(), [&](Item& item) {
+        return item.id == deleteID;
+    });
+
+    if (it != itemList.end()) {
+        cout << "Delete this item? (Y/N): ";
+        cin >> confirm;
+
+        if (toupper(confirm) == 'Y') {
+            itemList.erase(it);
+            cout << "Item deleted successfully.\n";
+        } else {
+            cout << "Item deletion cancelled.\n";
+        }
+    } else {
+        cout << "Item not found.\n";
+    }
+}
+
+void showItems() {
+    cout << "\n========== ITEM LIST ==========\n";
+    cout << left << setw(10) << "ID" 
+         << setw(20) << "Name" 
+         << setw(10) << "Price" 
+         << setw(10) << "Qty" << "\n";
+
+    for (const auto& item : itemList) {
+        cout << left << setw(10) << item.id
+             << setw(20) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << "\n";
+    }
+
+    if (itemList.empty()) {
+        cout << "No items found.\n";
+    }
+}
+
+int main() {
+    int choice;
+
+    do {
+        showMenu();
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: searchItem(); break;
+            case 3: deleteItem(); break;
+            case 4: showItems(); break;
+            case 5: cout << "Returning to menu...\n"; break;
+            default: cout << "Invalid choice. Try again.\n";
+        }
+
+    } while (choice != 5);
+
+    cout << "\nExiting Rental System. Thank you.\n";
+    return 0;
+}
