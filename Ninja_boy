@@ -168,7 +168,7 @@ int main() {
         case 3: searchItem(); break;
         case 4: updateItem(); break;
         case 5: deleteItem(); break;
-        case 6: cout << "Exiting Rental System. Thank you.\n"; break;
+        case 6: cout << "Exiting AEPS Rental System. Thank you.\n"; break;
         default: cout << "Invalid choice. Please try again.\n"; break;
         }
     } while (choice != 6);
