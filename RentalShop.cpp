@@ -12,8 +12,14 @@ HWND hAddBtn, hSearchBtn, hDeleteBtn, hShowBtn;
 // RentalShop logic
 struct Item {
     std::wstring name;
-    double price;
-    int quantity;
+    double price = 0.0;
+    int quantity = 0;
+};
+
+struct Room {
+    std::wstring name;
+    double price = 0.0;
+    int quantity = 0;
 };
 
 class RentalShop {
@@ -24,9 +30,9 @@ public:
     std::wstring showItems() const;
     bool updateItem(int id, const Item& updatedItem);
     bool reserveItem(int id, int qty, std::wstring& result);
-    bool addRoom(int roomNumber, const std::wstring& name, double price, int quantity);
-    bool reserveRoom(int roomNumber, int qty); // reserve x rooms
-    std::map<int, Item> getAllRooms() const;
+    //bool addRoom(int roomNumber, const std::wstring& name, double price, int quantity);
+    //bool reserveRoom(int roomNumber, int qty); // reserve x rooms
+    //std::map<int, Item> getAllRooms() const;
 
 private:
     std::map<int, Item> rooms; // Use room number as key
@@ -69,13 +75,26 @@ std::wstring RentalShop::showItems() const {
     return ss.str();
 }
 
-bool reserveItem(int id, int qty) {
+bool RentalShop::reserveItem(int id, int qty, std::wstring& result) {
     auto it = items.find(id);
-    if (it != items.end() && it->second.quantity >= qty) {
-        it->second.quantity -= qty;
-        return true;
+    if (it != items.end()) {
+        if (qty > 0 && it->second.quantity >= qty) {
+            it->second.quantity -= qty;
+
+            std::wstringstream ss;
+            ss << L"Reserved " << qty << L" of \"" << it->second.name << L"\"" << L"\n Remaining: " << it->second.quantity;
+            result = ss.str();
+            return true;
+        }
+        else {
+            result = L"Not enough stock or invalid quantity.";
+            return false;
+        }
     }
-    return false;
+    else {
+        result = L"Item ID not found.";
+        return false;
+    }
 }
 
 bool RentalShop::updateItem(int id, const Item& updatedItem) {
@@ -86,24 +105,4 @@ bool RentalShop::updateItem(int id, const Item& updatedItem) {
     }
     return false;
 }
-
-bool RentalShop::addRoom(int roomNumber, const std::wstring& name, double price, int quantity) {
-    if (rooms.count(roomNumber)) return false; // already exists
-    rooms[roomNumber] = { name, price, quantity };
-    return true;
-}
-
-bool RentalShop::reserveRoom(int roomNumber, int qty) {
-    auto it = rooms.find(roomNumber);
-    if (it != rooms.end() && it->second.quantity >= qty) {
-        it->second.quantity -= qty;
-        return true;
-    }
-    return false; // not enough or doesn't exist
-}
-
-std::map<int, Item> RentalShop::getAllRooms() const {
-    return items;  // assuming `items` is your internal map of roomNumber → Item
-}
-
 RentalShop shop;
