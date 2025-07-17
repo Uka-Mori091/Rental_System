@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="AEPS Residences.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="RentalShop.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
